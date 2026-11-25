@@ -25,12 +25,22 @@ def validate(text: str) -> None:
         raise SystemExit("entry text fails the competition gate: not one line")
 
 
+def verify_written(path: str, text: str) -> None:
+    """Read the entry back and confirm it is byte-identical to TEXT."""
+    with open(path, "r", encoding="utf-8") as f:
+        written = f.read()
+    if written != text:
+        raise SystemExit("entry.txt read-back differs from the entry text")
+
+
 def main() -> None:
     validate(TEXT)
     out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output"
     os.makedirs(out_dir, exist_ok=True)
-    with open(os.path.join(out_dir, "entry.txt"), "w", encoding="utf-8") as f:
+    path = os.path.join(out_dir, "entry.txt")
+    with open(path, "w", encoding="utf-8") as f:
         f.write(TEXT)
+    verify_written(path, TEXT)
 
 
 if __name__ == "__main__":
